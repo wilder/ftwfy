@@ -20,6 +20,9 @@ import android.util.SparseArray
 
 import com.wilder.fito.camera.GraphicOverlay
 import com.google.android.gms.vision.Detector
+import com.google.android.gms.vision.text.Element
+import com.google.android.gms.vision.text.Line
+import com.google.android.gms.vision.text.Text
 import com.google.android.gms.vision.text.TextBlock
 
 /**
@@ -27,7 +30,7 @@ import com.google.android.gms.vision.text.TextBlock
  * as OcrGraphics.
  * TODO: Make this implement Detector.Processor<TextBlock> and add text to the GraphicOverlay
 </TextBlock> */
-class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: GraphicOverlay<OcrGraphic>) : Detector.Processor<TextBlock> {
+class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: GraphicOverlay<OcrGraphic>, private val textToFind: String) : Detector.Processor<TextBlock> {
 
     override fun release() {
         mGraphicOverlay.clear()
@@ -38,13 +41,25 @@ class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: Gra
 
         val items = detections.detectedItems
 
-        for (i in 0..items.size() - 1) {
+        for (i in 0 until items.size()) {
             val item = items.valueAt(i)
-            if (item != null && item.value != null) {
-                Log.d("Processor", "Text detected! " + item.value)
+            //TODO check regex
+            if (item != null && item.value != null && item.value.contains(textToFind, true)) {
+//                Log.d("Processor", "Text detected! " + item.value)   var
+                val lines: List<Text> = item.components as List<Text> // var
+                var matchedTexts: List<Text>? = null
+
+                //for each of the found lines
+                lines.forEach {
+                    val texts = it.components as List<Text>
+                    matchedTexts = texts.filter {
+                        it.value.equals(textToFind)
+                    }
+                }
+
+                val graphic = OcrGraphic(mGraphicOverlay, matchedTexts)
+                mGraphicOverlay.add(graphic)  // var  var    var  var
             }
-            val graphic = OcrGraphic(mGraphicOverlay, item)
-            mGraphicOverlay.add(graphic)
         }
     }
 

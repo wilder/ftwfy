@@ -29,7 +29,7 @@
     </com.wilder.fito.camera.CameraSourcePreview>
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/regexCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/regex"
@@ -53,7 +53,7 @@
         android:layout_marginBottom="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toLeftOf="@+id/checkBox"
+        app:layout_constraintRight_toLeftOf="@+id/regexCheckbox"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -63,9 +63,10 @@
         tools:layout_constraintLeft_creator="1">
 
         <EditText
+            android:id="@+id/textToFind"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="hint" />
+            android:hint="@string/text_to_find" />
     </android.support.design.widget.TextInputLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -19,6 +19,8 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.util.Log
+import com.google.android.gms.vision.text.Text
 
 import com.wilder.fito.camera.GraphicOverlay
 import com.google.android.gms.vision.text.TextBlock
@@ -27,7 +29,7 @@ import com.google.android.gms.vision.text.TextBlock
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
  * overlay view.
  */
-class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock: TextBlock?) : GraphicOverlay.Graphic(overlay) {
+class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock: List<Text>?) : GraphicOverlay.Graphic(overlay) {
 
     var id: Int = 0
 
@@ -72,16 +74,29 @@ class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock:
             return
         }
 
-        // Draws the bounding box around the TextBlock.
-        val rect = RectF(textBlock.boundingBox)
-        rect.left = translateX(rect.left)
-        rect.top = translateY(rect.top)
-        rect.right = translateX(rect.right)
-        rect.bottom = translateY(rect.bottom)
-        canvas.drawRect(rect, sRectPaint!!)
+//        // Draws the bounding box around the TextBlock.
+//        for (line in textBlock){
+//            Log.d("q", line.components.size.toString())
+//            for (component in line.components) {
+//                val rect = RectF(component.boundingBox)
+//                rect.left = translateX(rect.left)
+//                rect.top = translateY(rect.top)
+//                rect.right = translateX(rect.right)
+//                rect.bottom = translateY(rect.bottom)
+//                canvas.drawRect(rect, sRectPaint!!)
+//            }
+//        }
 
-        // Render the text at the bottom of the box.
-        canvas.drawText(textBlock.value, rect.left, rect.bottom, sTextPaint!!)
+        // Draws the bounding box around the TextBlock.
+            for (component in textBlock) {
+                val rect = RectF(component.boundingBox)
+                rect.left = translateX(rect.left)
+                rect.top = translateY(rect.top)
+                rect.right = translateX(rect.right)
+                rect.bottom = translateY(rect.bottom)
+                canvas.drawRect(rect, sRectPaint!!)
+            }
+
     }
 
     companion object {

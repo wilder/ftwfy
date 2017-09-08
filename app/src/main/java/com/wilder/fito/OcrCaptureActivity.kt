@@ -29,10 +29,7 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.GestureDetector
-import android.view.MotionEvent
-import android.view.ScaleGestureDetector
-import android.view.View
+import android.view.*
 import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
@@ -60,6 +57,9 @@ class OcrCaptureActivity : AppCompatActivity() {
     // A TextToSpeech engine for speaking a String value.
     private val tts: TextToSpeech? = null
 
+    //text to find
+    private var textToFind: String = "var"
+
     /**
      * Initializes the UI and creates the detector pipeline.
      */
@@ -78,7 +78,7 @@ class OcrCaptureActivity : AppCompatActivity() {
         // permission is not granted yet, request permission.
         val rc = ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
         if (rc == PackageManager.PERMISSION_GRANTED) {
-            createCameraSource(autoFocus, useFlash)
+            createCameraSource(autoFocus, useFlash, textToFind)
         } else {
             requestCameraPermission()
         }
@@ -136,14 +136,14 @@ class OcrCaptureActivity : AppCompatActivity() {
      * the constant.
      */
     @SuppressLint("InlinedApi")
-    private fun createCameraSource(autoFocus: Boolean, useFlash: Boolean) {
+    private fun createCameraSource(autoFocus: Boolean, useFlash: Boolean, textToFind: String) {
         val context = applicationContext
 
         // Create the TextRecognizer
         val textRecognizer = TextRecognizer.Builder(context).build()
 
         // Set the TextRecognizer's Processor.
-        textRecognizer.setProcessor(OcrDetectorProcessor(mGraphicOverlay))
+        textRecognizer.setProcessor(OcrDetectorProcessor(mGraphicOverlay, textToFind))
 
         // Check if the TextRecognizer is operational.
         if (!textRecognizer.isOperational) {
@@ -234,7 +234,7 @@ class OcrCaptureActivity : AppCompatActivity() {
             // We have permission, so create the camerasource
             val autoFocus = intent.getBooleanExtra(AutoFocus, false)
             val useFlash = intent.getBooleanExtra(UseFlash, false)
-            createCameraSource(autoFocus, useFlash)
+            createCameraSource(autoFocus, useFlash, textToFind)
             return
         }
 
