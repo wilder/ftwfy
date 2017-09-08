@@ -14,7 +14,7 @@
         android:icon="@drawable/icon"
         android:label="OcrReaderApp"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat">
+        android:theme="@style/Theme.AppCompat.NoActionBar">
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
@@ -23,8 +23,7 @@
             android:value="ocr" />
 
         <activity
-            android:name=".OcrCaptureActivity"
-            android:label="Read Text">
+            android:name=".OcrCaptureActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
