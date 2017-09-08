@@ -45,20 +45,22 @@ class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: Gra
             val item = items.valueAt(i)
             //TODO check regex
             if (item != null && item.value != null && item.value.contains(textToFind, true)) {
-//                Log.d("Processor", "Text detected! " + item.value)   var
-                val lines: List<Text> = item.components as List<Text> // var
-                var matchedTexts: List<Text>? = null
+                val lines: List<Text> = item.components as List<Text>
+                var matchedTexts: ArrayList<Text>? = ArrayList()
 
                 //for each of the found lines
                 lines.forEach {
+                    //get each word
                     val texts = it.components as List<Text>
-                    matchedTexts = texts.filter {
+
+                    //filter only the desired text and add to the list of words that will be drawn
+                    val matchedText = texts.filter {
                         it.value.equals(textToFind)
                     }
+                    matchedText.map { matchedTexts?.add(it) }
                 }
-
                 val graphic = OcrGraphic(mGraphicOverlay, matchedTexts)
-                mGraphicOverlay.add(graphic)  // var  var    var  var
+                mGraphicOverlay.add(graphic)
             }
         }
     }

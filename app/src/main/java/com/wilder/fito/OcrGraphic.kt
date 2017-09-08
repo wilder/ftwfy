@@ -74,28 +74,15 @@ class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock:
             return
         }
 
-//        // Draws the bounding box around the TextBlock.
-//        for (line in textBlock){
-//            Log.d("q", line.components.size.toString())
-//            for (component in line.components) {
-//                val rect = RectF(component.boundingBox)
-//                rect.left = translateX(rect.left)
-//                rect.top = translateY(rect.top)
-//                rect.right = translateX(rect.right)
-//                rect.bottom = translateY(rect.bottom)
-//                canvas.drawRect(rect, sRectPaint!!)
-//            }
-//        }
-
         // Draws the bounding box around the TextBlock.
-            for (component in textBlock) {
-                val rect = RectF(component.boundingBox)
-                rect.left = translateX(rect.left)
-                rect.top = translateY(rect.top)
-                rect.right = translateX(rect.right)
-                rect.bottom = translateY(rect.bottom)
-                canvas.drawRect(rect, sRectPaint!!)
-            }
+        for (component in textBlock) {
+            val rect = RectF(component.boundingBox)
+            rect.left = translateX(rect.left)
+            rect.top = translateY(rect.top)
+            rect.right = translateX(rect.right)
+            rect.bottom = translateY(rect.bottom)
+            canvas.drawRect(rect, sRectPaint!!)
+        }
 
     }
 
