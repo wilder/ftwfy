@@ -86,12 +86,9 @@ class OcrCaptureActivity : AppCompatActivity() {
         gestureDetector = GestureDetector(this, CaptureGestureListener())
         scaleGestureDetector = ScaleGestureDetector(this, ScaleListener())
 
-        Snackbar.make(mGraphicOverlay!!, "Tap to Speak. Pinch/Stretch to zoom",
-                Snackbar.LENGTH_LONG)
-                .show()
-
-        // TODO: Set up the Text To Speech engine.
+        //TODO: set listener on edittext. update camerasource when textchanges
     }
+
 
     /**
      * Handles the requesting of the camera permission.  This includes
@@ -247,7 +244,7 @@ class OcrCaptureActivity : AppCompatActivity() {
         val listener = DialogInterface.OnClickListener { dialog, id -> finish() }
 
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Multitracker sample")
+        builder.setTitle("Fito")
                 .setMessage(R.string.no_camera_permission)
                 .setPositiveButton(R.string.ok, listener)
                 .show()
