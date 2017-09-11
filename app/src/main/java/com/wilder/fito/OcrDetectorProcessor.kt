@@ -15,22 +15,20 @@
  */
 package com.wilder.fito
 
-import android.util.Log
-import android.util.SparseArray
-
-import com.wilder.fito.camera.GraphicOverlay
 import com.google.android.gms.vision.Detector
-import com.google.android.gms.vision.text.Element
-import com.google.android.gms.vision.text.Line
 import com.google.android.gms.vision.text.Text
 import com.google.android.gms.vision.text.TextBlock
+import com.wilder.fito.camera.GraphicOverlay
 
 /**
  * A very simple Processor which gets detected TextBlocks and adds them to the overlay
  * as OcrGraphics.
  * TODO: Make this implement Detector.Processor<TextBlock> and add text to the GraphicOverlay
 </TextBlock> */
-class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: GraphicOverlay<OcrGraphic>, private val textToFind: String) : Detector.Processor<TextBlock> {
+class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: GraphicOverlay<OcrGraphic>, private val textToFindParam: String) : Detector.Processor<TextBlock> {
+
+    var textToFind = textToFindParam
+    var regexEnabled = false
 
     override fun release() {
         mGraphicOverlay.clear()
@@ -43,8 +41,8 @@ class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: Gra
 
         for (i in 0 until items.size()) {
             val item = items.valueAt(i)
-            //TODO check regex
-            if (item != null && item.value != null && item.value.contains(textToFind, true)) {
+
+            if (shouldProcessDetection(item)) {
                 val lines: List<Text> = item.components as List<Text>
                 var matchedTexts: ArrayList<Text>? = ArrayList()
 
@@ -53,9 +51,13 @@ class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: Gra
                     //get each word
                     val texts = it.components as List<Text>
 
-                    //filter only the desired text and add to the list of words that will be drawn
+                    //filter only the desired text and add to the list+ of words that will be drawn
                     val matchedText = texts.filter {
-                        it.value.equals(textToFind)
+                        if (regexEnabled) {
+                            it.value.matches(textToFind.toRegex())
+                        } else {
+                            it.value.equals(textToFind)
+                        }
                     }
                     matchedText.map { matchedTexts?.add(it) }
                 }
@@ -63,6 +65,22 @@ class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: Gra
                 mGraphicOverlay.add(graphic)
             }
         }
+    }
+
+    /**
+     * Checks if there was a detection and if it has matched
+     * the regex when the regex is enabled or if it contains
+     * the text if regex is not enabled
+     */
+    private fun shouldProcessDetection(item: TextBlock) : Boolean {
+        if (item.value != null) {
+            return if(regexEnabled) {
+                item.value.contains(textToFind.toRegex())
+            } else {
+                item.value.contains(textToFind)
+            }
+        }
+        return false
     }
 
 }

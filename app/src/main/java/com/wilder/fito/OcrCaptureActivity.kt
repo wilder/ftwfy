@@ -30,10 +30,13 @@ import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.*
+import android.widget.CheckBox
+import android.widget.EditText
 import android.widget.Toast
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.vision.text.TextRecognizer
+import com.jakewharton.rxbinding2.widget.RxTextView
 import com.wilder.fito.camera.CameraSource
 import com.wilder.fito.camera.CameraSourcePreview
 import com.wilder.fito.camera.GraphicOverlay
@@ -47,6 +50,7 @@ import java.io.IOException
 class OcrCaptureActivity : AppCompatActivity() {
 
     private var mCameraSource: CameraSource? = null
+    private var processor: OcrDetectorProcessor? = null
     private lateinit var mPreview: CameraSourcePreview
     private lateinit var mGraphicOverlay: GraphicOverlay<OcrGraphic>
 
@@ -87,6 +91,18 @@ class OcrCaptureActivity : AppCompatActivity() {
         scaleGestureDetector = ScaleGestureDetector(this, ScaleListener())
 
         //TODO: set listener on edittext. update camerasource when textchanges
+        val regexCheckbox = findViewById(R.id.regexCheckbox) as CheckBox
+        val etTextToFind = findViewById(R.id.textToFind) as EditText
+
+        RxTextView.textChanges(etTextToFind).subscribe {
+            textToFind = etTextToFind.text.toString()
+            processor?.textToFind = textToFind
+        }
+
+        regexCheckbox.setOnClickListener {
+            processor?.regexEnabled = regexCheckbox.isChecked
+        }
+
     }
 
 
@@ -127,6 +143,7 @@ class OcrCaptureActivity : AppCompatActivity() {
         return b || c || super.onTouchEvent(e)
     }
 
+
     /**
      * Creates and starts the camera.  Note that this uses a higher resolution in comparison
      * to other detection examples to enable the ocr detector to detect small text samples
@@ -142,8 +159,10 @@ class OcrCaptureActivity : AppCompatActivity() {
         // Create the TextRecognizer
         val textRecognizer = TextRecognizer.Builder(context).build()
 
+        processor = OcrDetectorProcessor(mGraphicOverlay, textToFind)
+
         // Set the TextRecognizer's Processor.
-        textRecognizer.setProcessor(OcrDetectorProcessor(mGraphicOverlay, textToFind))
+        textRecognizer.setProcessor(processor!!)
 
         // Check if the TextRecognizer is operational.
         if (!textRecognizer.isOperational) {
