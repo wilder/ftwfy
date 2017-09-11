@@ -11,8 +11,8 @@
         android:allowBackup="true"
         android:fullBackupContent="false"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/icon"
-        android:label="OcrReaderApp"
+        android:icon="@mipmap/ic_launcher"
+        android:label="Fito"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <meta-data
