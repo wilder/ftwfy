@@ -25,7 +25,7 @@ import com.wilder.fito.camera.GraphicOverlay
  * as OcrGraphics.
  * TODO: Make this implement Detector.Processor<TextBlock> and add text to the GraphicOverlay
 </TextBlock> */
-class OcrDetectorProcessor internal constructor(private val mGraphicOverlay: GraphicOverlay<OcrGraphic>, private val textToFindParam: String) : Detector.Processor<TextBlock> {
+class DetectorProcessor internal constructor(private val mGraphicOverlay: GraphicOverlay<OcrGraphic>, private val textToFindParam: String) : Detector.Processor<TextBlock> {
 
     var textToFind = textToFindParam
     var regexEnabled = false

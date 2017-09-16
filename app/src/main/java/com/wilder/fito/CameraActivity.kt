@@ -47,10 +47,10 @@ import java.io.IOException
  * rear facing camera. During detection overlay graphics are drawn to indicate the position,
  * size, and contents of each TextBlock.
  */
-class OcrCaptureActivity : AppCompatActivity() {
+class CameraActivity : AppCompatActivity() {
 
     private var mCameraSource: CameraSource? = null
-    private var processor: OcrDetectorProcessor? = null
+    private var processor: DetectorProcessor? = null
     private lateinit var mPreview: CameraSourcePreview
     private lateinit var mGraphicOverlay: GraphicOverlay<OcrGraphic>
 
@@ -159,7 +159,7 @@ class OcrCaptureActivity : AppCompatActivity() {
         // Create the TextRecognizer
         val textRecognizer = TextRecognizer.Builder(context).build()
 
-        processor = OcrDetectorProcessor(mGraphicOverlay, textToFind)
+        processor = DetectorProcessor(mGraphicOverlay, textToFind)
 
         // Set the TextRecognizer's Processor.
         textRecognizer.setProcessor(processor!!)
@@ -373,7 +373,7 @@ class OcrCaptureActivity : AppCompatActivity() {
     }
 
     companion object {
-        private val TAG = "OcrCaptureActivity"
+        private val TAG = "CameraActivity"
 
         // Intent request code to handle updating play services if needed.
         private val RC_HANDLE_GMS = 9001
