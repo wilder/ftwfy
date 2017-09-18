@@ -29,11 +29,11 @@ import com.google.android.gms.vision.text.TextBlock
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
  * overlay view.
  */
-class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock: List<Text>?) : GraphicOverlay.Graphic(overlay) {
+class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock: List<Text>?, val textToFind: String, val hasSpace: Boolean) : GraphicOverlay.Graphic(overlay) {
 
     var id: Int = 0
 
-    init {
+     init {
 
         if (sRectPaint == null) {
             sRectPaint = Paint()
@@ -76,10 +76,21 @@ class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock:
 
         // Draws the bounding box around the TextBlock.
         for (component in textBlock) {
+
             val rect = RectF(component.boundingBox)
-            rect.left = translateX(rect.left)
+            val numberOfCharacters = component.value.length
+
+            //TODO: Fix character size
+            val characterSize = (rect.right-rect.left)/numberOfCharacters
+
+            var leftRight: List<Float> = arrayListOf(0f, 0f)
+            if (hasSpace){
+                leftRight = trim(characterSize, component.value, textToFind)
+            }
+
+            rect.left = translateX(rect.left)//+leftRight[0])
             rect.top = translateY(rect.top)
-            rect.right = translateX(rect.right)
+            rect.right = translateX(rect.right)//-leftRight[1])
             rect.bottom = translateY(rect.bottom)
             canvas.drawRect(rect, sRectPaint!!)
         }

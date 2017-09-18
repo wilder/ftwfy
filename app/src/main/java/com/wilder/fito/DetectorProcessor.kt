@@ -15,7 +15,10 @@
  */
 package com.wilder.fito
 
+import android.util.Log
+import android.util.SparseArray
 import com.google.android.gms.vision.Detector
+import com.google.android.gms.vision.text.Line
 import com.google.android.gms.vision.text.Text
 import com.google.android.gms.vision.text.TextBlock
 import com.wilder.fito.camera.GraphicOverlay
@@ -36,9 +39,31 @@ class DetectorProcessor internal constructor(private val mGraphicOverlay: Graphi
 
     override fun receiveDetections(detections: Detector.Detections<TextBlock>) {
         mGraphicOverlay.clear()
-
+//
         val items = detections.detectedItems
 
+        if (!regexEnabled && textToFind.contains("\\s+".toRegex())) {
+            processPhrase(items)
+        } else {
+            processWords(items)// oi eu sou o wilder oi o hahaha
+        }
+    }
+
+    private fun processPhrase(items: SparseArray<TextBlock>) {
+        for (i in 0 until items.size()) {
+            if (items.get(i) != null) {
+                val components = items.get(i).components
+                components.forEach {
+                    if (textToFind.isNotBlank() && it.value.contains(textToFind)) {
+                        val graphic = OcrGraphic(mGraphicOverlay, listOf(it), textToFind, true)
+                        mGraphicOverlay.add(graphic)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun processWords(items: SparseArray<TextBlock>) {
         for (i in 0 until items.size()) {
             val item = items.valueAt(i)
 
@@ -61,7 +86,7 @@ class DetectorProcessor internal constructor(private val mGraphicOverlay: Graphi
                     }
                     matchedText.map { matchedTexts?.add(it) }
                 }
-                val graphic = OcrGraphic(mGraphicOverlay, matchedTexts)
+                val graphic = OcrGraphic(mGraphicOverlay, matchedTexts, textToFind, false)
                 mGraphicOverlay.add(graphic)
             }
         }
