@@ -46,7 +46,7 @@ import java.util.HashSet
  * from the preview's coordinate system to the view coordinate system.
  *
  */
-class GraphicOverlay<T : GraphicOverlay.Graphic>(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class GraphicOverlay<T : GraphicOverlay.Graphic>(context: Context?, attrs: AttributeSet?) : View(context, attrs) {
     private val mLock = Any()
     private var mPreviewWidth: Int = 0
     private var mWidthScaleFactor = 1.0f
