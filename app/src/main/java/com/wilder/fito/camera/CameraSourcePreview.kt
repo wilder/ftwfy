@@ -67,13 +67,13 @@ class CameraSourcePreview(private val mContext: Context, attrs: AttributeSet) : 
 
     fun stop() {
         if (mCameraSource != null) {
-            mCameraSource!!.stop()
+            mCameraSource?.stop()
         }
     }
 
     fun release() {
         if (mCameraSource != null) {
-            mCameraSource!!.release()
+            mCameraSource?.release()
             mCameraSource = null
         }
     }
@@ -82,19 +82,19 @@ class CameraSourcePreview(private val mContext: Context, attrs: AttributeSet) : 
     @Throws(IOException::class, SecurityException::class)
     private fun startIfReady() {
         if (mStartRequested && mSurfaceAvailable) {
-            mCameraSource!!.start(mSurfaceView.holder)
+            mCameraSource?.start(mSurfaceView.holder)
             if (mOverlay != null) {
-                val size = mCameraSource!!.previewSize
-                val min = Math.min(size.width, size.height)
+                val size = mCameraSource?.previewSize
+                val min = Math.min(size!!.width, size.height)
                 val max = Math.max(size.width, size.height)
                 if (isPortraitMode) {
                     // Swap width and height sizes when in portrait, since it will be rotated by
                     // 90 degrees
-                    mOverlay!!.setCameraInfo(min, max, mCameraSource!!.cameraFacing)
+                    mOverlay?.setCameraInfo(min, max, mCameraSource!!.cameraFacing)
                 } else {
-                    mOverlay!!.setCameraInfo(max, min, mCameraSource!!.cameraFacing)
+                    mOverlay?.setCameraInfo(max, min, mCameraSource!!.cameraFacing)
                 }
-                mOverlay!!.clear()
+                mOverlay?.clear()
             }
             mStartRequested = false
         }
@@ -124,7 +124,7 @@ class CameraSourcePreview(private val mContext: Context, attrs: AttributeSet) : 
         var previewWidth = 320
         var previewHeight = 240
         if (mCameraSource != null) {
-            val size = mCameraSource!!.previewSize
+            val size = mCameraSource?.previewSize
             if (size != null) {
                 previewWidth = size.width
                 previewHeight = size.height
