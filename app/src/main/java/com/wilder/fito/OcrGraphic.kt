@@ -61,7 +61,6 @@ class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock:
      * @return True if the provided point is contained within this graphic's bounding box.
      */
     override fun contains(x: Float, y: Float): Boolean {
-        // TODO: Check if this graphic's text contains this point.
         return false
     }
 
@@ -70,27 +69,24 @@ class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock:
      */
     override fun draw(canvas: Canvas) {
         // TODO: Draw the text onto the canvas.
-        if (textBlock == null) {
+        if (textBlock == null || textBlock.isEmpty()) {
             return
         }
 
         // Draws the bounding box around the TextBlock.
         for (component in textBlock) {
 
+            /*
+             * TODO: draw box only around the searched text when the search text has more than one word.
+             * For now, when the search text contains more than one word
+             * it is drawing the box around the whole line it appears.
+             * @see git branch feature/matchTextInLine
+             */
+
             val rect = RectF(component.boundingBox)
-            val numberOfCharacters = component.value.length
-
-            //TODO: Fix character size
-            val characterSize = (rect.right-rect.left)/numberOfCharacters
-
-            var leftRight: List<Float> = arrayListOf(0f, 0f)
-            if (hasSpace){
-                leftRight = trim(characterSize, component.value, textToFind)
-            }
-
-            rect.left = translateX(rect.left)//+leftRight[0])
+            rect.left = translateX(rect.left)
             rect.top = translateY(rect.top)
-            rect.right = translateX(rect.right)//-leftRight[1])
+            rect.right = translateX(rect.right)
             rect.bottom = translateY(rect.bottom)
             canvas.drawRect(rect, sRectPaint!!)
         }
