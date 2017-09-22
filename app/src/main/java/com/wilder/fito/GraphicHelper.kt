@@ -4,7 +4,6 @@ package com.wilder.fito
  * Created by Wilder on 17/09/17.
  */
 /**
- * //TODO: move to other class and document
  * returns the width of the extra text at the right or left of the textToFindText
  */
 fun trim(characterSize: Float, matched: String, textToFind: String) : List<Float> {

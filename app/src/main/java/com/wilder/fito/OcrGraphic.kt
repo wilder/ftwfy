@@ -21,9 +21,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.Log
 import com.google.android.gms.vision.text.Text
-
 import com.wilder.fito.camera.GraphicOverlay
-import com.google.android.gms.vision.text.TextBlock
 
 /**
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
@@ -65,32 +63,33 @@ class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock:
         return false
     }
 
-    /**
-     * Draws the text block annotations for position, size, and raw value on the supplied canvas.
+    /*
+     * Draws the text block annotations for position, size, and raw value on the supplied canvas
      */
     override fun draw(canvas: Canvas) {
         // TODO: Draw the text onto the canvas.
-        if (textBlock == null) {
+        if (textBlock == null || textBlock.isEmpty()) {
             return
         }
 
         // Draws the bounding box around the TextBlock.
         for (component in textBlock) {
-
+            val component = textBlock[0]
             val rect = RectF(component.boundingBox)
             val numberOfCharacters = component.value.length
 
-            //TODO: Fix character size
-            val characterSize = (rect.right-rect.left)/numberOfCharacters
+            //TODO: Fix character size to match only the searched text when it contains spaces
+            val characterSize = rect.width()/numberOfCharacters
+            Log.d("rect", "my width: "+(rect.right-rect.left))
 
             var leftRight: List<Float> = arrayListOf(0f, 0f)
             if (hasSpace){
                 leftRight = trim(characterSize, component.value, textToFind)
             }
 
-            rect.left = translateX(rect.left)//+leftRight[0])
+            rect.left = translateX(rect.left+leftRight[0])//+leftRight[0])
             rect.top = translateY(rect.top)
-            rect.right = translateX(rect.right)//-leftRight[1])
+            rect.right = translateX(rect.right-leftRight[1])//-leftRight[1])
             rect.bottom = translateY(rect.bottom)
             canvas.drawRect(rect, sRectPaint!!)
         }
