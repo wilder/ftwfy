@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wilder.fito.camera
+package com.wilderpereira.ftwfy.camera
 
 import android.Manifest
 import android.content.Context

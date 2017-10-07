@@ -14,7 +14,7 @@
     <string name="ocr_error">"Error reading text: %1$s"</string>
     <string name="regex">regex</string>
     <string name="text_to_find">Text to find</string>
-    <string name="tutorial_1">"Fito can help you to fastly find any occurrence of a text using your camera."</string>
+    <string name="tutorial_1">"Ftwfy can help you to fast find any occurrence of a word using your camera."</string>
     <string name="tutorial_2">"Go straight to the point when you need to locate titles, names, dates, e-mails, phone numbers etc in big text files."</string>
     <string name="tutorial_3">"You can also make use of regular expressions to help you find text by its patterns in a more advanced way."</string>
 </resources>

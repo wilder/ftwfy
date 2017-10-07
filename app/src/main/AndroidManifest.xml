@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wilder.fito"
+    package="com.wilderpereira.ftwfy"
     android:installLocation="auto">
 
     <uses-feature android:name="android.hardware.camera" />
@@ -13,7 +13,7 @@
         android:fullBackupContent="false"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Fito"
+        android:label="Ftwfy"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <meta-data

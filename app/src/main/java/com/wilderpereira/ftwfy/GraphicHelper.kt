@@ -1,4 +1,4 @@
-package com.wilder.fito
+package com.wilderpereira.ftwfy
 
 /**
  * Created by Wilder on 17/09/17.

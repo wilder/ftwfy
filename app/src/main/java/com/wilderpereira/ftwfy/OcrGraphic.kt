@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wilder.fito
+package com.wilderpereira.ftwfy
 
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
-import android.util.Log
 import com.google.android.gms.vision.text.Text
 
-import com.wilder.fito.camera.GraphicOverlay
-import com.google.android.gms.vision.text.TextBlock
+import com.wilderpereira.ftwfy.camera.GraphicOverlay
 
 /**
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic

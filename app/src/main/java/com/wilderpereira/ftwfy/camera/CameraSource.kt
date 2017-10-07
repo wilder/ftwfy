@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wilder.fito.camera
+package com.wilderpereira.ftwfy.camera
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -1050,7 +1050,6 @@ private constructor() {
                 // The code below needs to run outside of synchronization, because this will allow
                 // the camera to add pending frame(s) while we are running detection on the current
                 // frame.
-
                 try {
                     mDetector?.receiveFrame(outputFrame)
                 } catch (t: Throwable) {

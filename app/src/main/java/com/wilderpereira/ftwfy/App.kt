@@ -1,4 +1,4 @@
-package com.wilder.fito
+package com.wilderpereira.ftwfy
 
 import android.app.Application
 

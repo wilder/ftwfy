@@ -1,4 +1,4 @@
-package com.wilder.fito
+package com.wilderpereira.ftwfy
 
 import android.content.Context
 import android.content.SharedPreferences

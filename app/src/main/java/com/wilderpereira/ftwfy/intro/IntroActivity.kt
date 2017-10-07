@@ -1,4 +1,4 @@
-package com.wilder.fito.intro
+package com.wilderpereira.ftwfy.intro
 
 import android.content.Intent
 import android.graphics.Color
@@ -8,9 +8,9 @@ import android.support.v4.app.Fragment
 import android.view.View
 import com.github.paolorotolo.appintro.AppIntro
 import com.github.paolorotolo.appintro.AppIntroFragment
-import com.wilder.fito.CameraActivity
-import com.wilder.fito.R
-import com.wilder.fito.prefs
+import com.wilderpereira.ftwfy.CameraActivity
+import com.wilderpereira.ftwfy.R
+import com.wilderpereira.ftwfy.prefs
 
 
 /**

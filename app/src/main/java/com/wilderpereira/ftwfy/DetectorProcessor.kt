@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wilder.fito
+package com.wilderpereira.ftwfy
 
-import android.util.Log
 import android.util.SparseArray
 import com.google.android.gms.vision.Detector
-import com.google.android.gms.vision.text.Line
 import com.google.android.gms.vision.text.Text
 import com.google.android.gms.vision.text.TextBlock
-import com.wilder.fito.camera.GraphicOverlay
+import com.wilderpereira.ftwfy.camera.GraphicOverlay
 
 /**
  * A very simple Processor which gets detected TextBlocks and adds them to the overlay

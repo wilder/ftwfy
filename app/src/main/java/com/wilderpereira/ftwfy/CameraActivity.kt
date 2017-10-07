@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wilder.fito
+package com.wilderpereira.ftwfy
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -37,9 +37,9 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.vision.text.TextRecognizer
 import com.jakewharton.rxbinding2.widget.RxTextView
-import com.wilder.fito.camera.CameraSource
-import com.wilder.fito.camera.CameraSourcePreview
-import com.wilder.fito.camera.GraphicOverlay
+import com.wilderpereira.ftwfy.camera.CameraSource
+import com.wilderpereira.ftwfy.camera.CameraSourcePreview
+import com.wilderpereira.ftwfy.camera.GraphicOverlay
 import java.io.IOException
 
 /**
@@ -129,7 +129,7 @@ class CameraActivity : AppCompatActivity() {
                     RC_HANDLE_CAMERA_PERM)
         }
 
-        Snackbar.make(mGraphicOverlay!!, R.string.permission_camera_rationale,
+        Snackbar.make(mGraphicOverlay, R.string.permission_camera_rationale,
                 Snackbar.LENGTH_INDEFINITE)
                 .setAction(R.string.ok, listener)
                 .show()
@@ -204,7 +204,7 @@ class CameraActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         if (mPreview != null) {
-            mPreview!!.stop()
+            mPreview.stop()
         }
     }
 
@@ -215,7 +215,7 @@ class CameraActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         if (mPreview != null) {
-            mPreview!!.release()
+            mPreview.release()
         }
     }
 
@@ -260,10 +260,10 @@ class CameraActivity : AppCompatActivity() {
         Log.e(TAG, "Permission not granted: results len = " + grantResults.size +
                 " Result code = " + if (grantResults.size > 0) grantResults[0] else "(empty)")
 
-        val listener = DialogInterface.OnClickListener { dialog, id -> finish() }
+        val listener = DialogInterface.OnClickListener { _, _ -> finish() }
 
         val builder = AlertDialog.Builder(this)
-        builder.setTitle("Fito")
+        builder.setTitle("Ftwfy")
                 .setMessage(R.string.no_camera_permission)
                 .setPositiveButton(R.string.ok, listener)
                 .show()
@@ -285,7 +285,7 @@ class CameraActivity : AppCompatActivity() {
 
         if (mCameraSource != null) {
             try {
-                mPreview!!.start(mCameraSource!!, mGraphicOverlay)
+                mPreview.start(mCameraSource!!, mGraphicOverlay)
             } catch (e: IOException) {
                 Log.e(TAG, "Unable to start camera source.", e)
                 mCameraSource!!.release()
@@ -295,25 +295,9 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * onTap is called to speak the tapped TextBlock, if any, out loud.
-
-     * @param rawX - the raw position of the tap
-     * *
-     * @param rawY - the raw position of the tap.
-     * *
-     * @return true if the tap was on a TextBlock
-     */
-    private fun onTap(rawX: Float, rawY: Float): Boolean {
-        // TODO: Speak the text when the user taps on screen.
-        return false
-    }
-
     private inner class CaptureGestureListener : GestureDetector.SimpleOnGestureListener() {
 
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-            return onTap(e.rawX, e.rawY) || super.onSingleTapConfirmed(e)
-        }
+        override fun onSingleTapConfirmed(e: MotionEvent): Boolean = super.onSingleTapConfirmed(e)
     }
 
     private inner class ScaleListener : ScaleGestureDetector.OnScaleGestureListener {
