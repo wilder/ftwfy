@@ -178,7 +178,7 @@ class CameraActivity : AppCompatActivity() {
         mCameraSource = CameraSource.Builder(applicationContext, textRecognizer)
                 .setFacing(CameraSource.CAMERA_FACING_BACK)
                 .setRequestedPreviewSize(1280, 1024)
-                .setRequestedFps(15.0f)
+                .setRequestedFps(Float.MAX_VALUE) // work-around for getting the best value
                 .setFlashMode(if (useFlash) Camera.Parameters.FLASH_MODE_TORCH else null)
                 .setFocusMode(if (autoFocus) Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE else null)
                 .build()
