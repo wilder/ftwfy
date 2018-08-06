@@ -24,7 +24,6 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.hardware.Camera
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
@@ -58,9 +57,6 @@ class CameraActivity : AppCompatActivity() {
     private var scaleGestureDetector: ScaleGestureDetector? = null
     private var gestureDetector: GestureDetector? = null
 
-    // A TextToSpeech engine for speaking a String value.
-    private val tts: TextToSpeech? = null
-
     //text to find
     private var textToFind: String = "var"
 
@@ -87,12 +83,11 @@ class CameraActivity : AppCompatActivity() {
             requestCameraPermission()
         }
 
-        gestureDetector = GestureDetector(this, CaptureGestureListener())
+        gestureDetector = GestureDetector(this, GestureDetector.SimpleOnGestureListener())
         scaleGestureDetector = ScaleGestureDetector(this, ScaleListener())
 
-        //TODO: set listener on edittext. update camerasource when textchanges
-        val regexCheckbox = findViewById(R.id.regexCheckbox) as CheckBox
-        val etTextToFind = findViewById(R.id.textToFind) as EditText
+        val regexCheckbox = findViewById<CheckBox>(R.id.regexCheckbox)
+        val etTextToFind = findViewById<EditText>(R.id.textToFind)
 
         RxTextView.textChanges(etTextToFind).subscribe {
             textToFind = etTextToFind.text.toString()
@@ -203,9 +198,7 @@ class CameraActivity : AppCompatActivity() {
      */
     override fun onPause() {
         super.onPause()
-        if (mPreview != null) {
-            mPreview.stop()
-        }
+        mPreview.stop()
     }
 
     /**
@@ -214,9 +207,7 @@ class CameraActivity : AppCompatActivity() {
      */
     override fun onDestroy() {
         super.onDestroy()
-        if (mPreview != null) {
-            mPreview.release()
-        }
+        mPreview.release()
     }
 
     /**
@@ -243,12 +234,12 @@ class CameraActivity : AppCompatActivity() {
                                             permissions: Array<String>,
                                             grantResults: IntArray) {
         if (requestCode != RC_HANDLE_CAMERA_PERM) {
-            Log.d(TAG, "Got unexpected permission result: " + requestCode)
+            Log.d(TAG, "Got unexpected permission result: $requestCode")
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
             return
         }
 
-        if (grantResults.size != 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "Camera permission granted - initialize the camera source")
             // We have permission, so create the camerasource
             val autoFocus = intent.getBooleanExtra(AutoFocus, false)
@@ -258,7 +249,7 @@ class CameraActivity : AppCompatActivity() {
         }
 
         Log.e(TAG, "Permission not granted: results len = " + grantResults.size +
-                " Result code = " + if (grantResults.size > 0) grantResults[0] else "(empty)")
+                " Result code = " + if (grantResults.isNotEmpty()) grantResults[0] else "(empty)")
 
         val listener = DialogInterface.OnClickListener { _, _ -> finish() }
 
@@ -295,11 +286,6 @@ class CameraActivity : AppCompatActivity() {
         }
     }
 
-    private inner class CaptureGestureListener : GestureDetector.SimpleOnGestureListener() {
-
-        override fun onSingleTapConfirmed(e: MotionEvent): Boolean = super.onSingleTapConfirmed(e)
-    }
-
     private inner class ScaleListener : ScaleGestureDetector.OnScaleGestureListener {
 
         /**
@@ -316,9 +302,7 @@ class CameraActivity : AppCompatActivity() {
          * * only wants to update scaling factors if the change is
          * * greater than 0.01.
          */
-        override fun onScale(detector: ScaleGestureDetector): Boolean {
-            return false
-        }
+        override fun onScale(detector: ScaleGestureDetector): Boolean = false
 
         /**
          * Responds to the beginning of a scaling gesture. Reported by
@@ -333,9 +317,7 @@ class CameraActivity : AppCompatActivity() {
          * * sense, onScaleBegin() may return false to ignore the
          * * rest of the gesture.
          */
-        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean {
-            return true
-        }
+        override fun onScaleBegin(detector: ScaleGestureDetector): Boolean = true
 
         /**
          * Responds to the end of a scale gesture. Reported by existing
@@ -368,6 +350,5 @@ class CameraActivity : AppCompatActivity() {
         // Constants used to pass extra data in the intent
         val AutoFocus = "AutoFocus"
         val UseFlash = "UseFlash"
-        val TextBlockObject = "String"
     }
 }

@@ -17,13 +17,11 @@ package com.wilderpereira.ftwfy.camera
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.Camera
 import android.hardware.Camera.CameraInfo
-import android.os.Build
 import android.os.SystemClock
 import android.support.annotation.RequiresPermission
 import android.support.annotation.StringDef
@@ -174,7 +172,7 @@ private constructor() {
          */
         fun setRequestedFps(fps: Float): Builder {
             if (fps <= 0) {
-                throw IllegalArgumentException("Invalid fps: " + fps)
+                throw IllegalArgumentException("Invalid fps: $fps")
             }
             mCameraSource.mRequestedFps = fps
             return this
@@ -215,7 +213,7 @@ private constructor() {
          */
         fun setFacing(facing: Int): Builder {
             if (facing != CAMERA_FACING_BACK && facing != CAMERA_FACING_FRONT) {
-                throw IllegalArgumentException("Invalid camera: " + facing)
+                throw IllegalArgumentException("Invalid camera: $facing")
             }
             mCameraSource.cameraFacing = facing
             return this
@@ -324,15 +322,8 @@ private constructor() {
 
             mCamera = createCamera()
 
-            // SurfaceTexture was introduced in Honeycomb (11), so if we are running and
-            // old version of Android. fall back to use SurfaceView.
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                mDummySurfaceTexture = SurfaceTexture(DUMMY_TEXTURE_NAME)
-                mCamera?.setPreviewTexture(mDummySurfaceTexture)
-            } else {
-                mDummySurfaceView = SurfaceView(mContext)
-                mCamera?.setPreviewDisplay(mDummySurfaceView?.holder)
-            }
+            mDummySurfaceTexture = SurfaceTexture(DUMMY_TEXTURE_NAME)
+            mCamera?.setPreviewTexture(mDummySurfaceTexture)
             mCamera?.startPreview()
 
             mProcessingThread = Thread(mFrameProcessor)
@@ -402,20 +393,9 @@ private constructor() {
                 mCamera?.stopPreview()
                 mCamera?.setPreviewCallbackWithBuffer(null)
                 try {
-                    // We want to be compatible back to Gingerbread, but SurfaceTexture
-                    // wasn't introduced until Honeycomb.  Since the interface cannot use a
-                    // SurfaceTexture, if the developer wants to display a preview we must use a
-                    // SurfaceHolder.  If the developer doesn't want to display a preview we use a
-                    // SurfaceTexture if we are running at least Honeycomb.
-
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        mCamera?.setPreviewTexture(null)
-
-                    } else {
-                        mCamera?.setPreviewDisplay(null)
-                    }
+                    mCamera?.setPreviewTexture(null)
                 } catch (e: Exception) {
-                    Log.e(TAG, "Failed to clear camera preview: " + e)
+                    Log.e(TAG, "Failed to clear camera preview: $e")
                 }
 
                 mCamera?.release()
@@ -458,52 +438,6 @@ private constructor() {
     }
 
     /**
-     * Initiates taking a picture, which happens asynchronously.  The camera source should have been
-     * activated previously with [.start] or [.start].  The camera
-     * preview is suspended while the picture is being taken, but will resume once picture taking is
-     * done.
-     *
-     * @param shutter the callback for image capture moment, or null
-     * @param jpeg    the callback for JPEG image data, or null
-     */
-    fun takePicture(shutter: ShutterCallback, jpeg: PictureCallback) {
-        synchronized(mCameraLock) {
-            if (mCamera != null) {
-                val startCallback = PictureStartCallback()
-                startCallback.mDelegate = shutter
-                val doneCallback = PictureDoneCallback()
-                doneCallback.mDelegate = jpeg
-                mCamera?.takePicture(startCallback, null, null, doneCallback)
-            }
-        }
-    }
-
-    /**
-     * Gets the current focus mode setting.
-     *
-     * @return current focus mode. This value is null if the camera is not yet created.
-     * Applications should call [.autoFocus] to start the focus if focus
-     * mode is FOCUS_MODE_AUTO or FOCUS_MODE_MACRO.
-     * @see Camera.Parameters.FOCUS_MODE_AUTO
-     *
-     * @see Camera.Parameters.FOCUS_MODE_INFINITY
-     *
-     * @see Camera.Parameters.FOCUS_MODE_MACRO
-     *
-     * @see Camera.Parameters.FOCUS_MODE_FIXED
-     *
-     * @see Camera.Parameters.FOCUS_MODE_EDOF
-     *
-     * @see Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO
-     *
-     * @see Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-     */
-    @FocusMode
-    fun getFocusMode(): String? {
-        return mFocusMode
-    }
-
-    /**
      * Sets the focus mode.
      *
      * @param mode the focus mode
@@ -523,181 +457,6 @@ private constructor() {
             }
 
             return false
-        }
-    }
-
-    /**
-     * Gets the current flash mode setting.
-     *
-     * @return current flash mode. null if flash mode setting is not
-     * supported or the camera is not yet created.
-     * @see Camera.Parameters.FLASH_MODE_OFF
-     *
-     * @see Camera.Parameters.FLASH_MODE_AUTO
-     *
-     * @see Camera.Parameters.FLASH_MODE_ON
-     *
-     * @see Camera.Parameters.FLASH_MODE_RED_EYE
-     *
-     * @see Camera.Parameters.FLASH_MODE_TORCH
-     */
-    @FlashMode
-    fun getFlashMode(): String? {
-        return mFlashMode
-    }
-
-    /**
-     * Sets the flash mode.
-     *
-     * @param mode flash mode.
-     * @return `true` if the flash mode is set, `false` otherwise
-     * @see .getFlashMode
-     */
-    fun setFlashMode(@FlashMode mode: String?): Boolean {
-        synchronized(mCameraLock) {
-            if (mCamera != null && mode != null) {
-                val parameters = mCamera!!.parameters
-                if (parameters.supportedFlashModes.contains(mode)) {
-                    parameters.flashMode = mode
-                    mCamera!!.parameters = parameters
-                    mFlashMode = mode
-                    return true
-                }
-            }
-
-            return false
-        }
-    }
-
-    /**
-     * Starts camera auto-focus and registers a callback function to run when
-     * the camera is focused.  This method is only valid when preview is active
-     * (between [.start] or [.start] and before [.stop]
-     * or [.release]).
-     *
-     *
-     *
-     * Callers should check
-     * [.getFocusMode] to determine if
-     * this method should be called. If the camera does not support auto-focus,
-     * it is a no-op and [AutoFocusCallback.onAutoFocus]
-     * callback will be called immediately.
-     *
-     *
-     *
-     * If the current flash mode is not
-     * [Camera.Parameters.FLASH_MODE_OFF], flash may be
-     * fired during auto-focus, depending on the driver and camera hardware.
-     *
-     *
-     *
-     * @param cb the callback to run
-     * @see .cancelAutoFocus
-     */
-    fun autoFocus(cb: AutoFocusCallback?) {
-        synchronized(mCameraLock) {
-            if (mCamera != null) {
-                var autoFocusCallback: CameraAutoFocusCallback? = null
-                if (cb != null) {
-                    autoFocusCallback = CameraAutoFocusCallback()
-                    autoFocusCallback.mDelegate = cb
-                }
-                mCamera!!.autoFocus(autoFocusCallback)
-            }
-        }
-    }
-
-    /**
-     * Cancels any auto-focus function in progress.
-     * Whether or not auto-focus is currently in progress,
-     * this function will return the focus position to the default.
-     * If the camera does not support auto-focus, this is a no-op.
-     *
-     * @see .autoFocus
-     */
-    fun cancelAutoFocus() {
-        synchronized(mCameraLock) {
-            if (mCamera != null) {
-                mCamera!!.cancelAutoFocus()
-            }
-        }
-    }
-
-    /**
-     * Sets camera auto-focus move callback.
-     *
-     * @param cb the callback to run
-     * @return `true` if the operation is supported (i.e. from Jelly Bean), `false`
-     * otherwise
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    fun setAutoFocusMoveCallback(cb: AutoFocusMoveCallback?): Boolean {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            return false
-        }
-
-        synchronized(mCameraLock) {
-            if (mCamera != null) {
-                var autoFocusMoveCallback: CameraAutoFocusMoveCallback? = null
-                if (cb != null) {
-                    autoFocusMoveCallback = CameraAutoFocusMoveCallback()
-                    autoFocusMoveCallback.mDelegate = cb
-                }
-                mCamera!!.setAutoFocusMoveCallback(autoFocusMoveCallback)
-            }
-        }
-
-        return true
-    }
-
-    /**
-     * Wraps the camera1 shutter callback so that the deprecated API isn't exposed.
-     */
-    private inner class PictureStartCallback : Camera.ShutterCallback {
-        internal var mDelegate: ShutterCallback? = null
-
-        override fun onShutter() {
-            mDelegate?.onShutter()
-        }
-    }
-
-    /**
-     * Wraps the final callback in the camera sequence, so that we can automatically turn the camera
-     * preview back on after the picture has been taken.
-     */
-    private inner class PictureDoneCallback : Camera.PictureCallback {
-        internal var mDelegate: PictureCallback? = null
-
-        override fun onPictureTaken(data: ByteArray, camera: Camera) {
-            mDelegate?.onPictureTaken(data)
-            synchronized(mCameraLock) {
-                if (mCamera != null) {
-                    mCamera!!.startPreview()
-                }
-            }
-        }
-    }
-
-    /**
-     * Wraps the camera1 auto focus callback so that the deprecated API isn't exposed.
-     */
-    private inner class CameraAutoFocusCallback : Camera.AutoFocusCallback {
-        internal var mDelegate: AutoFocusCallback? = null
-
-        override fun onAutoFocus(success: Boolean, camera: Camera) {
-            mDelegate?.onAutoFocus(success)
-        }
-    }
-
-    /**
-     * Wraps the camera1 auto focus move callback so that the deprecated API isn't exposed.
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private inner class CameraAutoFocusMoveCallback : Camera.AutoFocusMoveCallback {
-        internal var mDelegate: AutoFocusMoveCallback? = null
-
-        override fun onAutoFocusMoving(start: Boolean, camera: Camera) {
-            mDelegate?.onAutoFocusMoving(start)
         }
     }
 
@@ -784,23 +543,18 @@ private constructor() {
      */
     private class SizePair(previewSize: android.hardware.Camera.Size,
                            pictureSize: android.hardware.Camera.Size?) {
-        private val mPreview: Size
+        private val mPreview: Size = Size(previewSize.width, previewSize.height)
         private var mPicture: Size? = null
 
         init {
-            mPreview = Size(previewSize.width, previewSize.height)
             if (pictureSize != null) {
                 mPicture = Size(pictureSize.width, pictureSize.height)
             }
         }
 
-        fun previewSize(): Size {
-            return mPreview
-        }
+        fun previewSize(): Size = mPreview
 
-        fun pictureSize(): Size? {
-            return mPicture
-        }
+        fun pictureSize(): Size? = mPicture
     }
 
     /**

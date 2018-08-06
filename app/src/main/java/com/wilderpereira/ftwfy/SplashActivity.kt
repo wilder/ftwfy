@@ -13,8 +13,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var intent: Intent?
-        intent = if (prefs.hasSeenIntro) {
+        val intent: Intent? = if (prefs.hasSeenIntro) {
             Intent(this, CameraActivity::class.java)
         } else {
             Intent(this, IntroActivity::class.java)

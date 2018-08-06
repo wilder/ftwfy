@@ -85,16 +85,12 @@ class GraphicOverlay<T : GraphicOverlay.Graphic>(context: Context?, attrs: Attri
          * Adjusts a horizontal value of the supplied value from the preview scale to the view
          * scale.
          */
-        fun scaleX(horizontal: Float): Float {
-            return horizontal * mOverlay.mWidthScaleFactor
-        }
+        fun scaleX(horizontal: Float): Float = horizontal * mOverlay.mWidthScaleFactor
 
         /**
          * Adjusts a vertical value of the supplied value from the preview scale to the view scale.
          */
-        fun scaleY(vertical: Float): Float {
-            return vertical * mOverlay.mHeightScaleFactor
-        }
+        fun scaleY(vertical: Float): Float = vertical * mOverlay.mHeightScaleFactor
 
         /**
          * Adjusts the x coordinate from the preview's coordinate system to the view coordinate
@@ -112,9 +108,7 @@ class GraphicOverlay<T : GraphicOverlay.Graphic>(context: Context?, attrs: Attri
          * Adjusts the y coordinate from the preview's coordinate system to the view coordinate
          * system.
          */
-        fun translateY(y: Float): Float {
-            return scaleY(y)
-        }
+        fun translateY(y: Float): Float = scaleY(y)
 
         fun postInvalidate() {
             mOverlay.postInvalidate()
@@ -139,35 +133,6 @@ class GraphicOverlay<T : GraphicOverlay.Graphic>(context: Context?, attrs: Attri
             mGraphics.add(graphic)
         }
         postInvalidate()
-    }
-
-    /**
-     * Removes a graphic from the overlay.
-     */
-    fun remove(graphic: T) {
-        synchronized(mLock) {
-            mGraphics.remove(graphic)
-        }
-        postInvalidate()
-    }
-
-    /**
-     * Returns the first graphic, if any, that exists at the provided absolute screen coordinates.
-     * These coordinates will be offset by the relative screen position of this view.
-     * @return First graphic containing the point, or null if no text is detected.
-     */
-    fun getGraphicAtLocation(rawX: Float, rawY: Float): T? {
-        synchronized(mLock) {
-            // Get the position of this View so the raw location can be offset relative to the view.
-            val location = IntArray(2)
-            this.getLocationOnScreen(location)
-            for (graphic in mGraphics) {
-                if (graphic.contains(rawX - location[0], rawY - location[1])) {
-                    return graphic
-                }
-            }
-            return null
-        }
     }
 
     /**

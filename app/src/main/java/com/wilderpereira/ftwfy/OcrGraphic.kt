@@ -27,7 +27,7 @@ import com.wilderpereira.ftwfy.camera.GraphicOverlay
  * Graphic instance for rendering TextBlock position, size, and ID within an associated graphic
  * overlay view.
  */
-class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, val textBlock: List<Text>?, val textToFind: String, val hasSpace: Boolean) : GraphicOverlay.Graphic(overlay) {
+class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, private val textBlock: List<Text>?, val textToFind: String, val hasSpace: Boolean) : GraphicOverlay.Graphic(overlay) {
 
     var id: Int = 0
 
