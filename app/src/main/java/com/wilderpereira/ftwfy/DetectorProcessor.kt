@@ -37,13 +37,13 @@ class DetectorProcessor internal constructor(private val mGraphicOverlay: Graphi
 
     override fun receiveDetections(detections: Detector.Detections<TextBlock>) {
         mGraphicOverlay.clear()
-//
+
         val items = detections.detectedItems
 
         if (!regexEnabled && textToFind.contains("\\s+".toRegex())) {
             processPhrase(items)
         } else {
-            processWords(items)// oi eu sou o wilder oi o hahaha
+            processWords(items)
         }
     }
 
@@ -51,39 +51,37 @@ class DetectorProcessor internal constructor(private val mGraphicOverlay: Graphi
         for (i in 0 until items.size()) {
             if (items.get(i) != null) {
                 val components = items.get(i).components
-                components.forEach {
-                    if (textToFind.isNotBlank() && it.value.contains(textToFind)) {
-                        val graphic = OcrGraphic(mGraphicOverlay, listOf(it), textToFind, true)
-                        mGraphicOverlay.add(graphic)
-                    }
-                }
+                components
+                        .filter { textToFind.isNotBlank() && it.value.contains(textToFind) }
+                        .map {
+                            val graphic = OcrGraphic(mGraphicOverlay, listOf(it), textToFind, true)
+                            mGraphicOverlay.add(graphic)
+                        }
             }
         }
     }
 
     private fun processWords(items: SparseArray<TextBlock>) {
+
         for (i in 0 until items.size()) {
             val item = items.valueAt(i)
 
             if (shouldProcessDetection(item)) {
                 val lines: List<Text> = item.components as List<Text>
-                var matchedTexts: ArrayList<Text>? = ArrayList()
+                val matchedTexts: ArrayList<Text>? = ArrayList()
 
-                //for each of the found lines
-                lines.forEach {
-                    //get each word
-                    val texts = it.components as List<Text>
-
-                    //filter only the desired text and add to the list+ of words that will be drawn
-                    val matchedText = texts.filter {
-                        if (regexEnabled) {
-                            it.value.matches(textToFind.toRegex())
-                        } else {
-                            it.value.equals(textToFind)
+                //for each of the found lines get each word
+                lines.flatMap { it.components as List<Text> }
+                        //filter only the desired text and add to the list of words that will be drawn
+                        .filter {
+                            if (regexEnabled) {
+                                it.value.matches(textToFind.toRegex())
+                            } else {
+                                it.value == textToFind
+                            }
                         }
-                    }
-                    matchedText.map { matchedTexts?.add(it) }
-                }
+                        .map { matchedTexts?.add(it) }
+
                 val graphic = OcrGraphic(mGraphicOverlay, matchedTexts, textToFind, false)
                 mGraphicOverlay.add(graphic)
             }

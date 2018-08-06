@@ -96,13 +96,12 @@ class GraphicOverlay<T : GraphicOverlay.Graphic>(context: Context?, attrs: Attri
          * Adjusts the x coordinate from the preview's coordinate system to the view coordinate
          * system.
          */
-        fun translateX(x: Float): Float {
-            if (mOverlay.mFacing == CameraSource.CAMERA_FACING_FRONT) {
-                return mOverlay.width - scaleX(x)
-            } else {
-                return scaleX(x)
-            }
-        }
+        fun translateX(x: Float): Float =
+                if (mOverlay.mFacing == CameraSource.CAMERA_FACING_FRONT) {
+                    mOverlay.width - scaleX(x)
+                } else {
+                    scaleX(x)
+                }
 
         /**
          * Adjusts the y coordinate from the preview's coordinate system to the view coordinate
