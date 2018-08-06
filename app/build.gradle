@@ -30,7 +30,7 @@ dependencies {
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
-    implementation 'com.github.apl-devs:appintro:v4.2.2'
+    implementation 'com.github.apl-devs:appintro:v4.2.3'
 
     implementation 'com.google.android.gms:play-services-vision:15.0.2'
 
@@ -38,4 +38,5 @@ dependencies {
 }
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
