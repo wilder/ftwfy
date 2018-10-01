@@ -9,4 +9,8 @@ Ftwfy is a open source Android App that uses the Mobile Vision API to allow you 
 
 It was developed in Kotlin using Google's Android Open Source code, and it has open issues, so everybody is invited to contribute.
 
+## License
+
+This repository is licensed under [Eclipse Public License 2.0](LICENSE)
+
 [<img src="https://camo.githubusercontent.com/21cd52aa8b8d6562008144a9d1d7b35596447196/687474703a2f2f692e696d6775722e636f6d2f37737130366c722e706e67">](https://play.google.com/store/apps/details?id=com.wilderpereira.ftwfy&pcampaignid=MKT-Other-global-all-co-prtnr-py-PartBadge-Mar2515-1)
