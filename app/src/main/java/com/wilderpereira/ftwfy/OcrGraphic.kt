@@ -35,14 +35,14 @@ class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, private val te
 
         if (sRectPaint == null) {
             sRectPaint = Paint()
-            sRectPaint!!.color = TEXT_COLOR
-            sRectPaint!!.style = Paint.Style.STROKE
+            sRectPaint!!.color = BACKGROUD_COLOR
+            sRectPaint!!.style = Paint.Style.FILL
             sRectPaint!!.strokeWidth = 4.0f
         }
 
         if (sTextPaint == null) {
             sTextPaint = Paint()
-            sTextPaint!!.color = TEXT_COLOR
+            sTextPaint!!.color = BACKGROUD_COLOR
             sTextPaint!!.textSize = 54.0f
         }
         // Redraw the overlay, as this graphic has been added.
@@ -93,7 +93,7 @@ class OcrGraphic internal constructor(overlay: GraphicOverlay<*>, private val te
 
     companion object {
 
-        private val TEXT_COLOR = Color.WHITE
+        private val BACKGROUD_COLOR = Color.parseColor("#bf00a7e1")
 
         private var sRectPaint: Paint? = null
         private var sTextPaint: Paint? = null
