@@ -28,45 +28,54 @@
 
     </com.wilderpereira.ftwfy.camera.CameraSourcePreview>
 
-    <CheckBox
-        android:id="@+id/regexCheckbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/regex"
-        android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout3"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintHorizontal_bias="0.97"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintTop_toTopOf="@+id/textInputLayout3" />
-
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/textInputLayout3"
-        android:layout_marginTop="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginBottom="16dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintRight_toLeftOf="@+id/regexCheckbox"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <LinearLayout
+        android:background="@android:color/white"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintVertical_bias="1.0"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintLeft_creator="1">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/textToFind"
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:weightSum="10"
+            android:elevation="4dp"
+            android:background="@android:color/white"
+            android:orientation="horizontal"
+            android:layout_margin="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/text_to_find" />
-    </android.support.design.widget.TextInputLayout>
+            android:layout_height="wrap_content">
+            <EditText
+                android:drawablePadding="8dp"
+                android:drawableStart="@drawable/ic_action_search"
+                android:background="@drawable/search_edit_text"
+                android:textColor="@color/blue"
+                android:id="@+id/textToFind"
+                android:layout_width="0dp"
+                android:layout_weight="7.5"
+                android:layout_height="wrap_content"
+                android:hint="@string/text_to_find"/>
+
+            <View
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_weight="0.02"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/darker_gray"/>
+
+            <CheckBox
+                android:buttonTint="@color/blue"
+                android:textColor="@android:color/darker_gray"
+                android:id="@+id/regexCheckbox"
+                android:layout_weight="2.5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/regex"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
